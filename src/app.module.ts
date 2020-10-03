@@ -1,30 +1,24 @@
 import { Module } from '@nestjs/common';
-// import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-// import { TypegooseModule } from "nestjs-typegoose";
 
-import { UserModule } from "./user/user.module";
-// import { AppController } from './app.controller';
-// import { AppService } from './app.service';
-// import { ProductsService } from './products/products.service';
-// import { ProductsController } from './products/products.controller';
-// import { AuthModule } from './auth/auth.module';
-import { WeatherController } from './weather/weather.controller';
-import { WeatherModule } from './weather/weather.module';
+import { WeatherModule } from './future/weather.module';
 import { UsersModule } from './users/users.module';
+import { CommunitiesController } from './communities/communities.controller';
+import { CommunitiesService } from './communities/communities.service';
+import { CommunitiesModule } from './communities/communities.module';
 
-// mongodb://YourUsername:YourPasswordHere@127.0.0.1:27017/your-database
+const swgUrl = "mongodb://root:q1w2e3r4@127.0.0.1:27017/yi?authSource=admin";
+const syUrl = "mongodb+srv://ysha:Woaizhongguo%402020@cluster1.ieadu.mongodb.net/test?retryWrites=true&w=majority";
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://root:q1w2e3r4@127.0.0.1:27017/yi?authSource=admin', {
+    MongooseModule.forRoot(swgUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
       useFindAndModify: false,
     }),
     WeatherModule,
-    UsersModule],
-  // controllers: [AppController, ProductsController],
-  // providers: [AppService, ProductsService],
+    UsersModule,
+    CommunitiesModule],
 })
 export class AppModule {}

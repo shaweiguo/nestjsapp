@@ -1,8 +1,40 @@
+import { IsNotEmpty, MinLength, IsEmail, IsEnum, IsInt } from 'class-validator';
+
 export class CreateUserDto {
-  readonly name: string;
-  readonly firstName: string;
-  readonly lastName: string;
-  readonly password: string;
-  readonly email: string;
-  readonly age: number;
+  @IsNotEmpty()
+  name: string;
+
+  firstName: string;
+  lastName: string;
+
+  @IsNotEmpty()
+  password: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsInt()
+  age: number;
+}
+
+export class RegisterUserDto {
+  @IsNotEmpty()
+  name: string;
+
+  firstName: string;
+  lastName: string;
+
+  @IsNotEmpty()
+  password1: string;
+
+  @IsNotEmpty()
+  password2: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsInt()
+  age: number;
 }

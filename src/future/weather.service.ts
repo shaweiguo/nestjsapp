@@ -8,6 +8,6 @@ export class WeatherService {
   async getWeather(): Promise<Weather> {
     const url = 'https://www.metaweather.com/api/location/search/?query=london';
     const response = await this.httpService.get(url).toPromise();
-    return response.data;
+    return response.data[0];
   }
 }
