@@ -15,7 +15,7 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop()
+  @Prop({ unique: true })
   name: string;
   @Prop()
   firstName: string;
