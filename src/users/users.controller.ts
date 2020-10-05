@@ -5,11 +5,11 @@ import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
-  constructor(private userService: UsersService) { }
+  constructor(private service: UsersService) { }
 
   @Post('')
   async create(@Res() res: Response, @Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.create(createUserDto);
+    const user = await this.service.create(createUserDto);
     return res.status(HttpStatus.CREATED).json({
       status: 201,
       message: "User created successful!",
@@ -28,9 +28,11 @@ export class UsersController {
       // console.log(`two password not equal: ${p1}/${p2}`)
       return res.status(HttpStatus.BAD_REQUEST).json({
         status: 400,
-        message: "two password not equal!"
+        message: "Two password not equal!",
+        data: null,
       });
     }
+
     let createUserDto = new(CreateUserDto);
     createUserDto.name = registerUserDto.name;
     createUserDto.password = p1;
@@ -39,50 +41,75 @@ export class UsersController {
     createUserDto.lastName = registerUserDto.lastName;
     createUserDto.age = registerUserDto.age;
 
-    const user = await this.userService.create(createUserDto);
+    const user = await this.service.create(createUserDto);
     return res.status(HttpStatus.CREATED).json({
       status: 201,
       message: "User created successful!",
-      data: user
+      data: user,
     });
   }
 
   @Get('')
   async getAll(@Res() res) {
-    const users = await this.userService.getAll();
+    const users = await this.service.getAll();
     return res.status(HttpStatus.OK).json({
       status: 200,
-      data: users
+      message: "Get all users successful!",
+      data: users,
     });
   }
 
   @Get(":id")
   async getOne(@Res() res, @Param('id') _id: string) {
-    const user = await this.userService.getAUser(_id);
+    const user = await this.service.getAUser(_id);
     if (!user)
       return res
         .status(HttpStatus.NOT_FOUND)
-        .json({ status: 404, error: "User not found!" });
-    return res.status(HttpStatus.OK).json({ status: 200, data: user });
+        .json({
+          status: 404,
+          message: "User not found!",
+          data: null,
+        });
+    return res.status(HttpStatus.OK).json({
+      status: 200,
+      message: "Get user successful!",
+      data: user,
+    });
   }
 
   @Patch(':id')
   async update(@Res() res, @Body() createUserDto: CreateUserDto, @Param("id") _id: string) {
-    const user = await this.userService.updateAUser(_id, createUserDto);
+    const user = await this.service.updateAUser(_id, createUserDto);
     if (!user)
       return res
         .status(HttpStatus.NOT_FOUND)
-        .json({ status: 404, error: "User not found!" });
-    return res.status(HttpStatus.OK).json({ status: 200, data: user });
+        .json({
+          status: 404,
+          message: "User not found!",
+          data: null,
+        });
+    return res.status(HttpStatus.OK).json({
+      status: 200,
+      message: "Update user successful!",
+      data: user,
+    });
   }
 
   @Delete(':id')
   async delete(@Res() res, @Param('id') _id: string) {
-    const user = await this.userService.deleteAUser(_id);
+    const user = await this.service.deleteAUser(_id);
     if (!user)
       return res
         .status(HttpStatus.NOT_FOUND)
-        .json({ status: 404, error: "User not found!" });
-    return res.status(HttpStatus.OK).json({ status: 200, message: "Delete user successful" });
+        .json({
+          status: 404,
+          message: "User not found!",
+          data: null,
+        });
+    return res.status(HttpStatus.OK).json({
+      status: 200,
+      message: "Delete user successful",
+      data: user,
+    });
   }
 }
