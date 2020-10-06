@@ -26,7 +26,7 @@ export class UsersController {
   // @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() body) {
-    console.log(body);
+    // console.log(body);
     return this.authService.login(body.username, body.password);
   }
 
