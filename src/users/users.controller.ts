@@ -1,15 +1,21 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Req, Res } from '@nestjs/common';
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import { AuthService } from './../auth/auth.service';
+import { LocalAuthGuard } from './../auth/local-auth.guard';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, RegisterUserDto, SigninDto } from './user.dto';
 import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
-  constructor(private service: UsersService) { }
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService
+  ) { }
 
   @Post('')
   async create(@Res() res: Response, @Body() createUserDto: CreateUserDto) {
-    const user = await this.service.create(createUserDto);
+    const user = await this.usersService.create(createUserDto);
     return res.status(HttpStatus.CREATED).json({
       status: 201,
       message: "User created successful!",
@@ -17,10 +23,17 @@ export class UsersController {
     });
   }
 
+  // @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(@Body() body) {
+    console.log(body);
+    return this.authService.login(body.username, body.password);
+  }
+
   @Post('/signin')
   async signIn(@Res() res: Response, @Body() signinDto: SigninDto) {
-    const user = await this.service.getAUserByNamePassword({
-      name: signinDto.name,
+    const user = await this.usersService.getAUserByNamePassword({
+      username: signinDto.name,
       password: signinDto.password
     });
 
@@ -63,7 +76,7 @@ export class UsersController {
     createUserDto.lastName = registerUserDto.lastName;
     createUserDto.age = registerUserDto.age;
 
-    const user = await this.service.create(createUserDto);
+    const user = await this.usersService.create(createUserDto);
     return res.status(HttpStatus.CREATED).json({
       status: 201,
       message: "User created successful!",
@@ -71,9 +84,10 @@ export class UsersController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('')
   async getAll(@Res() res) {
-    const users = await this.service.getAll();
+    const users = await this.usersService.getAll();
     return res.status(HttpStatus.OK).json({
       status: 200,
       message: "Get all users successful!",
@@ -83,7 +97,7 @@ export class UsersController {
 
   @Get(":id")
   async getOne(@Res() res, @Param('id') _id: string) {
-    const user = await this.service.getAUser(_id);
+    const user = await this.usersService.getAUser(_id);
     if (!user)
       return res
         .status(HttpStatus.NOT_FOUND)
@@ -101,7 +115,7 @@ export class UsersController {
 
   @Patch(':id')
   async update(@Res() res, @Body() createUserDto: CreateUserDto, @Param("id") _id: string) {
-    const user = await this.service.updateAUser(_id, createUserDto);
+    const user = await this.usersService.updateAUser(_id, createUserDto);
     if (!user)
       return res
         .status(HttpStatus.NOT_FOUND)
@@ -119,7 +133,7 @@ export class UsersController {
 
   @Delete(':id')
   async delete(@Res() res, @Param('id') _id: string) {
-    const user = await this.service.deleteAUser(_id);
+    const user = await this.usersService.deleteAUser(_id);
     if (!user)
       return res
         .status(HttpStatus.NOT_FOUND)

@@ -24,18 +24,18 @@ export class UsersService {
     return this.model.find().exec();
   }
 
-  async getAUser(userId): Promise<User> {
+  async getAUser(userId): Promise<User | undefined> {
     const user = await this.model.findById(userId).exec();
     return user;
   }
 
-  async getAUserByName(name): Promise<User> {
+  async getAUserByName(name): Promise<User | undefined> {
     const user = await this.model.findOne({ name }).exec();
     return user;
   }
 
-  async getAUserByNamePassword({name, password}): Promise<User> {
-    const user = await this.model.findOne({ name }).exec();
+  async getAUserByNamePassword({username, password}): Promise<User | undefined> {
+    const user = await this.model.findOne({ name: username }).exec();
 
     // check account found and verify password
     if (!user || !bcrypt.compareSync(password, user.password)) {
@@ -44,6 +44,19 @@ export class UsersService {
     } else {
         // authentication successful
         return user;
+    }
+  }
+
+  async getAUserIdByNamePassword({username, password}): Promise<string | undefined> {
+    const user = await this.model.findOne({ name: username }).exec();
+
+    // check account found and verify password
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+        // authentication failed
+        return null;
+    } else {
+        // authentication successful
+        return user._id;
     }
   }
 
