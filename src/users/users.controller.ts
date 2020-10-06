@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Req, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, RegisterUserDto } from './user.dto';
+import { CreateUserDto, RegisterUserDto, SigninDto } from './user.dto';
 import { Response } from 'express';
 
 @Controller('users')
@@ -15,6 +15,28 @@ export class UsersController {
       message: "User created successful!",
       data: user
     });
+  }
+
+  @Post('/signin')
+  async signIn(@Res() res: Response, @Body() signinDto: SigninDto) {
+    const user = await this.service.getAUserByNamePassword({
+      name: signinDto.name,
+      password: signinDto.password
+    });
+
+    if (user) {
+      return res.status(HttpStatus.OK).json({
+        status: 200,
+        message: "User authenticated successful!",
+        data: user
+      });
+    } else {
+      return res.status(HttpStatus.OK).json({
+        status: 400,
+        message: "User authenticated failed!",
+        data: user
+      });
+    }
   }
 
   @Post('/register')

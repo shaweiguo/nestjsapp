@@ -38,3 +38,11 @@ export class RegisterUserDto {
   @IsInt()
   age: number;
 }
+
+export class SigninDto {
+  @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
+  password: string;
+}
