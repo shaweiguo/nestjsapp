@@ -6,9 +6,10 @@ import { UsersModule } from './users/users.module';
 import { CommunitiesModule } from './communities/communities.module';
 import { ProductModule } from './product/product.module';
 import { AuthModule } from './auth/auth.module';
+import { CommuserModule } from './commuser/commuser.module';
 
 const swgUrl = "mongodb://root:q1w2e3r4@127.0.0.1:27017/yi?authSource=admin";
-const syUrl = "mongodb+srv://ysha:Woaizhongguo%402020@cluster1.ieadu.mongodb.net/test?retryWrites=true&w=majority";
+// const syUrl = "mongodb+srv://ysha:Woaizhongguo%402020@cluster1.ieadu.mongodb.net/test?retryWrites=true&w=majority";
 @Module({
   imports: [
     MongooseModule.forRoot(swgUrl, {
@@ -22,6 +23,7 @@ const syUrl = "mongodb+srv://ysha:Woaizhongguo%402020@cluster1.ieadu.mongodb.net
     CommunitiesModule,
     ProductModule,
     AuthModule,
+    CommuserModule,
   ],
 })
 export class AppModule {}
